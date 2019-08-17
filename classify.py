@@ -52,6 +52,46 @@ def save_classification(classifications, conn, docid, value):
     )
 
 
+def parse_vulnerability_text(article):
+    start = article.find("h3", string=re.compile("VULNERABILITY\\s+OVERVIEW"))
+    vulnerability_text = ""
+    if start:
+        vulnerability_text = start.get_text() + "\n"
+        for sibling in start.next_siblings:
+            if isinstance(sibling, bs4.element.Tag):
+                if sibling.name == "h3":
+                    sibling_text = sibling.get_text()
+                    subheading_match = re.match(
+                        "[0-9]+\\.[0-9]+\\.[0-9]+\\s",
+                        sibling_text
+                    )
+                    heading_match = re.match(
+                        "[0-9]+\\.[0-9]+\\s",
+                        sibling_text
+                    )
+                    if "BACKGROUND" in sibling_text:
+                        break
+                    elif re.search("VULNERABILITY\\s+DETAILS",
+                                   sibling_text):
+                        pass
+                    elif heading_match:
+                        break
+                    elif subheading_match:
+                        pass
+                    elif "Begin Update" in sibling_text:
+                        pass
+                    elif "End Update" in sibling_text:
+                        pass
+                vulnerability_text += "".join(extract_text(sibling))
+            elif isinstance(sibling, bs4.element.NavigableString):
+                vulnerability_text += sibling
+        vulnerability_text = re.sub("\n+", "\n", vulnerability_text)
+        vulnerability_text = re.sub("[ \u00a0]+", " ", vulnerability_text)
+        return vulnerability_text
+    else:
+        return None
+
+
 def manual_classification_loop(classifications, conn):
     cur = conn.cursor()
     cur.execute(
@@ -64,52 +104,21 @@ def manual_classification_loop(classifications, conn):
     )
     print("{} advisories need to be classified".format(cur.fetchone()[0]))
     cur.execute(
-        "SELECT advisories.docid, title, html "
+        "SELECT advisories.docid, title, url, html "
         "FROM advisories "
         "LEFT JOIN manual_classifications "
         "ON advisories.docid=manual_classifications.docid "
         "WHERE advisories.automatic_classification='maybe' "
         "AND manual_classifications.manual_classification IS NULL"
     )
-    for docid, title, html in cur.fetchall():
+    for docid, title, url, html in cur.fetchall():
         doc = bs4.BeautifulSoup(html, "lxml")
         article = doc.select("article.ics-advisory")[0]
-        start = article.find("h3", string=re.compile("VULNERABILITY\\s+OVERVIEW"))
-        vulnerability_text = ""
-        if start:
-            vulnerability_text = start.get_text() + "\n"
-            print(docid, title)
-            for sibling in start.next_siblings:
-                if isinstance(sibling, bs4.element.Tag):
-                    if sibling.name == "h3":
-                        sibling_text = sibling.get_text()
-                        subheading_match = re.match(
-                            "[0-9]+\\.[0-9]+\\.[0-9]+\\s",
-                            sibling_text
-                        )
-                        heading_match = re.match(
-                            "[0-9]+\\.[0-9]+\\s",
-                            sibling_text
-                        )
-                        if "BACKGROUND" in sibling_text:
-                            break
-                        elif re.search("VULNERABILITY\\s+DETAILS",
-                                       sibling_text):
-                            pass
-                        elif heading_match:
-                            break
-                        elif subheading_match:
-                            pass
-                        elif "Begin Update" in sibling_text:
-                            pass
-                        elif "End Update" in sibling_text:
-                            pass
-                    vulnerability_text += "".join(extract_text(sibling))
-                elif isinstance(sibling, bs4.element.NavigableString):
-                    vulnerability_text += sibling
-            vulnerability_text = re.sub("\n+", "\n", vulnerability_text)
-            vulnerability_text = re.sub("[ \u00a0]+", " ", vulnerability_text)
-        print(vulnerability_text or "".join(extract_text(article)))
+        print(docid, title)
+        print(url)
+        print(
+            parse_vulnerability_text(article) or "".join(extract_text(article))
+        )
         command = None
         while not command:
             inp = input("[y]es/[n]o/[m]aybe/[s]kip/[q]uit: ")
