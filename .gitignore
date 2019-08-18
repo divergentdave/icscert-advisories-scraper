@@ -1,2 +1,3 @@
 /.advisory_cache
 /advisories.db
+/advisories.db-journal

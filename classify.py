@@ -33,8 +33,10 @@ def extract_text(node):
     if isinstance(node, bs4.element.Tag):
         for child in node.children:
             yield from extract_text(child)
-        if node.name in ("br", "div", "h3", "h4", "li", "p"):
+        if node.name in ("br", "div", "h1", "h2", "h3", "h4", "li", "p"):
             yield "\n"
+    elif isinstance(node, bs4.element.Comment):
+        pass
     elif isinstance(node, bs4.element.NavigableString):
         yield node
     else:
@@ -53,13 +55,13 @@ def save_classification(classifications, conn, docid, value):
 
 
 def parse_vulnerability_text(article):
-    start = article.find("h3", string=re.compile("VULNERABILITY\\s+OVERVIEW"))
+    start = article.find(("h2", "h3"), string=re.compile("VULNERABILITY(\\s+OVERVIEW)?"))
     vulnerability_text = ""
     if start:
         vulnerability_text = start.get_text() + "\n"
         for sibling in start.next_siblings:
             if isinstance(sibling, bs4.element.Tag):
-                if sibling.name == "h3":
+                if sibling.name == start.name:
                     sibling_text = sibling.get_text()
                     subheading_match = re.match(
                         "[0-9]+\\.[0-9]+\\.[0-9]+\\s",
@@ -70,6 +72,8 @@ def parse_vulnerability_text(article):
                         sibling_text
                     )
                     if "BACKGROUND" in sibling_text:
+                        break
+                    elif "MITIGATION" in sibling_text:
                         break
                     elif re.search("VULNERABILITY\\s+DETAILS",
                                    sibling_text):
