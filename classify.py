@@ -55,7 +55,7 @@ def save_classification(classifications, conn, docid, value):
 
 
 def parse_vulnerability_text(article):
-    start = article.find(("h2", "h3"), string=re.compile("VULNERABILITY(\\s+OVERVIEW)?"))
+    start = article.find(("h2", "h3"), string=re.compile("VULNERABILITY(\\s+OVERVIEW)?", re.I))
     vulnerability_text = ""
     if start:
         vulnerability_text = start.get_text() + "\n"
@@ -71,12 +71,13 @@ def parse_vulnerability_text(article):
                         "[0-9]+\\.[0-9]+\\s",
                         sibling_text
                     )
-                    if "BACKGROUND" in sibling_text:
+                    sibling_text_upper = sibling_text.upper()
+                    if "BACKGROUND" in sibling_text_upper:
                         break
-                    elif "MITIGATION" in sibling_text:
+                    elif "MITIGATION" in sibling_text_upper:
                         break
                     elif re.search("VULNERABILITY\\s+DETAILS",
-                                   sibling_text):
+                                   sibling_text, re.I):
                         pass
                     elif heading_match:
                         break
