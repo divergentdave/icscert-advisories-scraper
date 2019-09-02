@@ -154,7 +154,7 @@ def main():
     yaml_to_db(classifications, conn)
     conn.commit()
     with open(CLASSIFICATION_PATH, "w") as f:
-        yaml.safe_dump(classifications, f)
+        yaml.safe_dump(classifications, f, default_flow_style=False)
 
 
 if __name__ == "__main__":
