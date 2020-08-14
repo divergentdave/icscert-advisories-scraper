@@ -192,8 +192,10 @@ ICSA-16-208-01C: maybe
 ICSA-16-287-04: maybe
 ICSA-16-301-01: maybe
 ICSA-16-327-01: maybe
+ICSA-16-327-02: 'no'
 ICSA-16-327-02A: 'no'
 ICSA-16-336-01A: maybe
+ICSA-16-348-05: maybe
 ICSA-17-012-03: 'no'
 ICSA-17-068-01: maybe
 ICSA-17-094-03: maybe
@@ -256,6 +258,35 @@ ICSA-19-190-05: maybe
 ICSA-19-192-04: 'no'
 ICSA-19-213-03: 'no'
 ICSA-19-227-03: maybe
+ICSA-19-253-03: 'no'
+ICSA-19-253-05: maybe
+ICSA-19-253-06: 'yes'
+ICSA-19-274-03: 'no'
+ICSA-19-283-01: 'no'
+ICSA-19-302-01: 'yes'
+ICSA-19-304-02: maybe
+ICSA-19-318-01: maybe
+ICSA-19-330-02: maybe
+ICSA-19-344-05: 'no'
+ICSA-20-014-01: maybe
+ICSA-20-016-01: maybe
+ICSA-20-042-01: maybe
+ICSA-20-042-06: 'yes'
+ICSA-20-042-12: maybe
+ICSA-20-044-01: maybe
+ICSA-20-044-02: 'no'
+ICSA-20-070-01: 'no'
+ICSA-20-070-04: 'no'
+ICSA-20-105-05: 'no'
+ICSA-20-119-01: 'no'
+ICSA-20-133-01: 'no'
+ICSA-20-140-02: 'no'
+ICSA-20-142-02: 'no'
+ICSA-20-163-02: 'no'
+ICSA-20-170-04: 'no'
+ICSA-20-196-01: 'no'
+ICSA-20-196-05: 'no'
+ICSA-20-210-01: 'yes'
 ICSMA-16-089-01: maybe
 ICSMA-17-227-01: maybe
 ICSMA-17-255-01: 'no'
@@ -264,5 +295,10 @@ ICSMA-18-107-02: 'no'
 ICSMA-18-219-01: 'no'
 ICSMA-18-228-01: 'yes'
 ICSMA-19-022-01: maybe
+ICSMA-19-311-02: 'no'
+ICSMA-20-023-01: 'no'
+ICSMA-20-049-01: 'yes'
+ICSMA-20-170-01: 'no'
+ICSMA-20-170-04: 'no'
 'NCCIC Advisory: April 2011': 'no'
 'NCCIC Advisory: May 2011': 'no'
